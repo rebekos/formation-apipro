@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+  <head>
+    <title>API Client</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    
+    
+    <script>
+
+  /*$.get("http://localhost:3000/api/v1/tasks/1", function( data ) {
+    alert( "Data Loaded: " + data.task.description );
+  });*/
+
+  function callApiKo(){
+    const reponse = fetch('http://localhost:3000/api/v1/tasks')
+    console.log(reponse)
+  }
+  callApiKo();
+
+  function callApiOk(){
+    const reponse = fetch('http://localhost:3000/api/v1/tasks');
+    reponse.then(function(reponse){  
+      reponse.json().then(function (data) {
+        console.log('data',data)
+      })
+    }).catch(function (err) { console.log("Il y a errur ",err)})
+  }
+  callApiOk();
+
+  // function moi(){
+  //   const response = fetch('http://localhost:3000/');
+  //   response.then(response=>{
+  //     response.json().then(data=>{
+  //       console.log('data',data)
+  //       alert(data)
+  //     })
+  //   })
+  //   .catch(function (err) {console.log('Error',err)});
+
+  // }
+  // moi();
+  
+
+  async function callApiAsync(){
+    const reponse = await fetch('http://localhost:3000/api/v1/tasks')
+    const json = await reponse.json();
+    console.log("le json est ", json)
+  }
+   // callApiAsync();
+  function callApiArrow(){
+    fetch('http://localhost:3000/api/v1/tasks')
+        .then(response =>  response.json())
+        .then(json => {console.log('le json est ',JSON.stringify(json))})
+        .catch(error => console.log(error))
+        .catch(error => console.log(error))
+  }
+ // callApiArrow()
+
+  function getAllTasks(){
+    
+    const url = 'http://localhost:3000/api/v1/tasks';
+    const options = {
+      method : 'GET',
+      headers : {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        //'authorization' : 'Bearer ' + token
+        'Authorization': 'Basic '+btoa("mike:codeur")
+      }
+    }
+    fetch(url, options)
+        .then(response =>  response.json())
+        .then(json => {
+          json;
+          console.log('le json est ',json.tasks[0].title)
+        })
+        .catch(error => console.log("erreur de fetch", error))
+        .catch(error => console.log("erreur de json", error))
+
+  }
+  
+ var token = '';
+ function getToken(){
+    
+    const url = 'http://localhost:3000/oauth2/token/';
+    const oauthData = {username:'mike',password:'codeur',
+      scope:'write',client_id:'mike',client_secret:'codeur'}
+
+    const options = {
+      method : 'POST',
+      headers : {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body : JSON.stringify(oauthData)
+    }
+    fetch(url, options)
+        .then(response =>  response.json())
+        .then(json => {
+          json;
+          token = json.access_token;
+          console.log('le token est ',json.access_token)
+        })
+        .catch(error => console.log("erreur de fetch", error))
+        .catch(error => console.log("erreur de json", error))
+
+  }
+  //getToken()
+
+
+
+  function getTaskById(id){
+
+    const url = 'http://localhost:3000/api/v1/tasks/'+id;
+    const options = {
+      method : 'GET',
+      headers : {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'},
+    }
+    fetch(url, options)
+        .then(response =>  {
+          console.log("la reponse est : " +  response.ok)
+          console.log("le status est : " +  response.status)
+          console.log("le statusText est : " +  response.statusText)
+          if (response.ok) {
+            console.log("Tous s'est bien passé")
+            return response.json()
+          } else {
+            console.log("Erreur d'api " + response.statusText)
+            //throw new Error("error dapi les tache existe pas")
+          }
+          return response.json()
+        })
+        .then(json => {
+          if (json.success === true) {
+            console.log('le json est ',json.task.title)
+          } else {
+            console.log('le json est ',json.message)
+          }
+         
+        })
+        .catch(error => console.log("erreur de fetch", error))
+        .catch(error => console.log("erreur de json", error))
+
+  }
+  //getTaskById(1);
+
+
+  function createTask(task){
+    
+    const url = 'http://localhost:3000/api/v1/tasks';
+    const options = {
+      method : 'POST',
+      headers : {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'},
+      body : JSON.stringify(task)
+    }
+    fetch(url, options)
+        .then(response =>  {
+          console.log("la reponse est : " +  response.ok)
+          console.log("le status est : " +  response.status)
+          console.log("le statusText est : " +  response.statusText)
+          if (response.ok) {
+            console.log("Tous s'est bien passé")
+            return response.json()
+          } else {
+            console.log("Erreur d'api " + response.statusText)
+            //throw new Error("error dapi les tache existe pas")
+          }
+          return response.json()
+        })
+        .then(json => {
+          if (json.success === true) {
+            console.log('le json est ',json.task.title)
+          } else {
+            console.log('le json est ',json.message)
+          }
+         
+        })
+        .catch(error => console.log("erreur de fetch", error))
+        .catch(error => console.log("erreur de json", error))
+
+  }
+  const task = {title:'title js', description :'desc js'}
+  /*createTask(task);
+  createTask(task);
+  createTask(task);
+  createTask(task);
+  createTask(task);
+  createTask(task);
+  createTask(task);
+  createTask(task);
+  createTask(task);*/
+
+  function updateTask(task, id){
+
+    const url = 'http://localhost:3000/api/v1/tasks/'+id;
+    const options = {
+      method : 'PUT',
+      headers : {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'},
+      body : JSON.stringify(task)
+    }
+    fetch(url, options)
+        .then(response =>  {
+          console.log("la reponse est : " +  response.ok)
+          console.log("le status est : " +  response.status)
+          console.log("le statusText est : " +  response.statusText)
+          if (response.ok) {
+            console.log("Tous s'est bien passé")
+            return response.json()
+          } else {
+            console.log("Erreur d'api " + response.statusText)
+            //throw new Error("error dapi les tache existe pas")
+          }
+          return response.json()
+        })
+        .then(json => {
+          if (json.success === true) {
+            console.log('le json est ',json.task.title)
+          } else {
+            console.log('le json est ',json.message)
+          }
+         
+        })
+        .catch(error => console.log("erreur de fetch", error))
+        .catch(error => console.log("erreur de json", error))
+  }
+
+  const taskUp = {title:'title up', description :'desc up'}
+  //updateTask(taskUp, 5)
+
+
+
+  function deleteTask(id){
+
+    const url = 'http://localhost:3000/api/v1/tasks/'+id;
+    const options = {
+      method : 'DELETE',
+      headers : {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'},
+    }
+    fetch(url, options)
+        .then(response =>  {
+          console.log("la reponse est : " +  response.ok)
+          console.log("le status est : " +  response.status)
+          console.log("le statusText est : " +  response.statusText)
+          if (response.ok) {
+            console.log("Tous s'est bien passé")
+            return response.json()
+          } else {
+            console.log("Erreur d'api " + response.statusText)
+            //throw new Error("error dapi les tache existe pas")
+          }
+          return response.json()
+        })
+        .then(json => {
+          if (json.success === true) {
+            console.log('le json est ',json.task.title)
+          } else {
+            console.log('le json est ',json.message)
+          }
+         
+        })
+        .catch(error => console.log("erreur de fetch", error))
+        .catch(error => console.log("erreur de json", error))
+  
+  }
+ // deleteTask(1)
+    
+  function getMarvelCharacter(){
+    fetch('https://gateway.marvel.com:443/v1/public/characters?nameStartsWith=spider&apikey=5a4bd353e754599ed13518c2f87509df')
+        .then(response =>  response.json())
+        .then(json => {console.log('le json est ',JSON.stringify(json))})
+        .catch(error => console.log(error))
+        .catch(error => console.log(error))
+  }
+  //getMarvelCharacter();
+
+  function getAirbnb(){
+    fetch('https://airbnb.fr')
+        .then(response =>  response.json())
+        .then(json => {console.log('le json est ',JSON.stringify(json))})
+        .catch(error => console.log(error))
+        .catch(error => console.log(error))
+  }
+  //getAirbnb();
+  
+  
+  
+  
+  </script>
+    <div>
+      <ul id='messages'></ul>
+      <button onclick="getAllTasks()">Get</button>
+    </div>
+    
+  </body>
+</html>
